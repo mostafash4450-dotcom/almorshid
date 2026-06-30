@@ -36,10 +36,11 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
+      { url: '/image-removebg-preview.png', type: 'image/png', sizes: '512x512' },
       { url: '/icon.svg', type: 'image/svg+xml' },
-      { url: '/image-removebg-preview.png', type: 'image/png' },
     ],
-    apple: [{ url: '/image-removebg-preview.png', type: 'image/png' }],
+    apple: [{ url: '/image-removebg-preview.png', type: 'image/png', sizes: '512x512' }],
+    shortcut: '/image-removebg-preview.png',
   },
   manifest: '/manifest.webmanifest',
 };
