@@ -21,6 +21,8 @@ import {
   CheckCircle,
   Loader2,
   ChevronDown,
+  Upload,
+  X,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import type { Article, Category } from '@/lib/supabase';
@@ -55,6 +57,9 @@ export default function ArticleEditor({ article, categories, databaseError }: Pr
   const [saving, setSaving] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [showSeo, setShowSeo] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const contentImageInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (editorRef.current && article?.content) {
@@ -98,8 +103,55 @@ export default function ArticleEditor({ article, categories, databaseError }: Pr
     if (url) execCmd('createLink', url);
   };
   const handleImage = () => {
-    const url = window.prompt('أدخل رابط الصورة:', 'https://');
-    if (url) insertHTML(`<img src="${url}" alt="صورة" style="max-width:100%;height:auto;border-radius:8px;margin:16px 0;">`);
+    contentImageInputRef.current?.click();
+  };
+
+  const uploadContentImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMsg('حجم الصورة يجب أن يكون أقل من 5 ميجابايت');
+      return;
+    }
+    setUploading(true);
+    setErrorMsg('');
+    const fileExt = file.name.split('.').pop();
+    const fileName = `content-${Date.now()}.${fileExt}`;
+    const { error } = await supabase.storage.from('article-images').upload(fileName, file, { upsert: true });
+    if (error) {
+      setErrorMsg('فشل في رفع الصورة: ' + error.message);
+    } else {
+      const { data } = supabase.storage.from('article-images').getPublicUrl(fileName);
+      insertHTML(`<img src="${data.publicUrl}" alt="صورة" style="max-width:100%;height:auto;border-radius:8px;margin:16px 0;">`);
+    }
+    setUploading(false);
+    if (contentImageInputRef.current) contentImageInputRef.current.value = '';
+  };
+
+  const uploadFeaturedImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMsg('حجم الصورة يجب أن يكون أقل من 5 ميجابايت');
+      return;
+    }
+    setUploading(true);
+    setErrorMsg('');
+    const fileExt = file.name.split('.').pop();
+    const fileName = `featured-${Date.now()}.${fileExt}`;
+    const { error } = await supabase.storage.from('article-images').upload(fileName, file, { upsert: true });
+    if (error) {
+      setErrorMsg('فشل في رفع الصورة: ' + error.message);
+    } else {
+      const { data } = supabase.storage.from('article-images').getPublicUrl(fileName);
+      setFeaturedImage(data.publicUrl);
+    }
+    setUploading(false);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const removeFeaturedImage = () => {
+    setFeaturedImage('');
   };
 
   const handleSave = async (publishStatus: 'draft' | 'published') => {
@@ -285,7 +337,16 @@ export default function ArticleEditor({ article, categories, databaseError }: Pr
                 </div>
                 <div className="flex items-center gap-0.5">
                   {toolbarBtn(handleLink, <LinkIcon size={15} />, 'رابط')}
-                  {toolbarBtn(handleImage, <Image size={15} />, 'صورة')}
+                  <button
+                    type="button"
+                    onClick={handleImage}
+                    disabled={uploading}
+                    title="رفع صورة"
+                    className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors disabled:opacity-50"
+                  >
+                    {uploading ? <Loader2 size={15} className="animate-spin" /> : <Image size={15} />}
+                  </button>
+                  <input ref={contentImageInputRef} type="file" accept="image/*" onChange={uploadContentImage} className="hidden" />
                 </div>
               </div>
 
@@ -439,20 +500,48 @@ export default function ArticleEditor({ article, categories, databaseError }: Pr
               <div className="px-5 py-4 border-b border-gray-100">
                 <h3 className="text-sm font-bold text-gray-800">الصورة الرئيسية</h3>
               </div>
-              <div className="p-4">
-                <input
-                  type="url"
-                  value={featuredImage}
-                  onChange={(e) => setFeaturedImage(e.target.value)}
-                  placeholder="https://... رابط الصورة"
-                  className="w-full text-xs border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-200"
-                  dir="ltr"
-                />
-                {featuredImage && (
-                  <div className="mt-3 rounded-lg overflow-hidden border border-gray-100">
-                    <img src={featuredImage} alt="" className="w-full h-32 object-cover" />
+              <div className="p-4 space-y-3">
+                {featuredImage ? (
+                  <div className="relative group">
+                    <div className="rounded-lg overflow-hidden border border-gray-100">
+                      <img src={featuredImage} alt="" className="w-full h-40 object-cover" />
+                    </div>
+                    <button
+                      onClick={removeFeaturedImage}
+                      className="absolute top-2 left-2 w-7 h-7 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      title="حذف الصورة"
+                    >
+                      <X size={14} />
+                    </button>
                   </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg py-8 cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-colors">
+                    {uploading ? (
+                      <>
+                        <Loader2 size={24} className="animate-spin text-gray-400 mb-2" />
+                        <span className="text-xs text-gray-400">جارٍ الرفع...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Upload size={24} className="text-gray-300 mb-2" />
+                        <span className="text-xs text-gray-500">اضغط لرفع صورة</span>
+                        <span className="text-xs text-gray-400 mt-1">أو اسحب الصورة هنا</span>
+                      </>
+                    )}
+                    <input ref={fileInputRef} type="file" accept="image/*" onChange={uploadFeaturedImage} className="hidden" disabled={uploading} />
+                  </label>
                 )}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-400">أو</span>
+                  <input
+                    type="url"
+                    value={featuredImage}
+                    onChange={(e) => setFeaturedImage(e.target.value)}
+                    placeholder="الصق رابط الصورة هنا..."
+                    className="flex-1 text-xs border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                    dir="ltr"
+                  />
+                </div>
               </div>
             </div>
 
