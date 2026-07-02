@@ -54,9 +54,9 @@ export default function Footer() {
                 المرجع العربي الموثوق في تقييم شركات التداول، التحذير من شركات الفوركس النصابة، ومراجعة مكاتب المحاماة المتخصصة في استرداد الأموال.
               </p>
               <div className="space-y-2.5">
-                <a href="mailto:info@almorshid-almali.com" className="flex items-center gap-2.5 text-sm text-gray-400 hover:text-gold-300 transition-colors">
+                <a href="mailto:info@almorshidalmali.com" className="flex items-center gap-2.5 text-sm text-gray-400 hover:text-gold-300 transition-colors">
                   <Mail size={14} className="text-gold-500 flex-shrink-0" />
-                  <span>info@almorshid-almali.com</span>
+                  <span>info@almorshidalmali.comm</span>
                 </a>
               </div>
             </div>

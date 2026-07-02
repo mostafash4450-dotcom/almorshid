@@ -140,6 +140,12 @@
   }
 
   /* Article content */
+  .article-content {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+
   .article-content h1 {
     @apply text-3xl font-bold text-primary-900 mt-8 mb-4;
   }
@@ -154,6 +160,7 @@
 
   .article-content p {
     @apply text-gray-700 leading-relaxed mb-4;
+    overflow-wrap: break-word;
   }
 
   .article-content ul {
@@ -170,14 +177,31 @@
 
   .article-content table {
     @apply w-full border-collapse mb-4;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .article-content table::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .article-content table::-webkit-scrollbar-thumb {
+    background: #1B2A4A;
+    border-radius: 3px;
   }
 
   .article-content table th {
     @apply bg-primary-800 text-white px-4 py-2 text-right font-semibold;
+    white-space: normal;
+    min-width: 80px;
   }
 
   .article-content table td {
     @apply px-4 py-2 border border-gray-200 text-gray-700;
+    white-space: normal;
+    min-width: 80px;
   }
 
   .article-content table tr:nth-child(even) td {
@@ -186,10 +210,26 @@
 
   .article-content a {
     @apply text-primary-700 hover:text-primary-900 underline underline-offset-2;
+    word-break: break-word;
   }
 
   .article-content strong {
     @apply font-bold text-primary-900;
+  }
+
+  .article-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1rem auto;
+    border-radius: 8px;
+  }
+
+  .article-content pre,
+  .article-content code {
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
   }
 
   /* Top bar */

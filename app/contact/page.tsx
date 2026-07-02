@@ -2,15 +2,17 @@
 
 import { useState } from 'react';
 import { Mail, Shield, CheckCircle, AlertTriangle, Loader2 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
 
 export default function ContactPage() {
   const [form, setForm] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
-    company_name: '',
+    phone: '',
+    country: '',
+    company: '',
     amount: '',
-    problem_description: '',
+    description: '',
   });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [error, setError] = useState('');
@@ -19,15 +21,6 @@ export default function ContactPage() {
     e.preventDefault();
     setStatus('loading');
     setError('');
-
-    const { error: err } = await supabase.from('contact_submissions').insert([form]);
-    if (err) {
-      setStatus('error');
-      setError('حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى.');
-    } else {
-      setStatus('success');
-      setForm({ name: '', email: '', company_name: '', amount: '', problem_description: '' });
-    }
   };
 
   return (
@@ -55,124 +48,170 @@ export default function ContactPage() {
                 أرسل لنا تفاصيل قضيتك
               </h2>
 
-              {status === 'success' ? (
-                <div className="text-center py-12">
-                  <CheckCircle size={56} className="text-green-500 mx-auto mb-4" />
-                  <h3 className="text-xl font-bold text-green-700 mb-2" style={{ fontFamily: 'Cairo, sans-serif' }}>
-                    تم إرسال رسالتك بنجاح!
-                  </h3>
-                  <p className="text-gray-600" style={{ fontFamily: 'Tajawal, sans-serif' }}>
-                    سيتواصل معك فريقنا خلال 24-48 ساعة لمراجعة قضيتك وتوجيهك للخطوات اللازمة.
-                  </p>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  <div className="grid sm:grid-cols-2 gap-5">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-1.5" style={{ fontFamily: 'Cairo, sans-serif' }}>
-                        الاسم الكامل <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={form.name}
-                        onChange={(e) => setForm({ ...form, name: e.target.value })}
-                        placeholder="أدخل اسمك الكامل"
-                        className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 transition-all"
-                        style={{ fontFamily: 'Tajawal, sans-serif' }}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-1.5" style={{ fontFamily: 'Cairo, sans-serif' }}>
-                        البريد الإلكتروني <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        required
-                        value={form.email}
-                        onChange={(e) => setForm({ ...form, email: e.target.value })}
-                        placeholder="example@email.com"
-                        className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 transition-all"
-                        style={{ fontFamily: 'Tajawal, sans-serif' }}
-                        dir="ltr"
-                      />
-                    </div>
-                  </div>
+              <form
+                action="https://crm.zoho.com/crm/WebToLeadForm"
+                method="POST"
+                name="WebToLeads4493626000071855001"
+                acceptCharset="UTF-8"
+                className="space-y-5"
+              >
+                {/* Zoho hidden fields */}
+                <input type="hidden" name="xnQsjsdp" value="971f56dc56ae7f8daa5c7ee5f0be0fb64671dd1feb2efd8ef6af8071cbd996b1" />
+                <input type="hidden" name="zc_gad" id="zc_gad" value="" />
+                <input type="hidden" name="xmIwtLD" value="58f630380ac93c47e0a14604d86bf1da3a45d433945811f1beb52c2a492e20c16082cb62d6f24082a70b170516780f8e" />
+                <input type="hidden" name="actionType" value="TGVhZHM=" />
+                <input type="hidden" name="returnURL" value="https://almorshidalmali.com/thankyou" />
+                <input type="hidden" name="Lead Source" value="المرشد المالي" />
 
-                  <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-1.5" style={{ fontFamily: 'Cairo, sans-serif' }}>
-                        اسم شركة التداول
-                      </label>
-                      <input
-                        type="text"
-                        value={form.company_name}
-                        onChange={(e) => setForm({ ...form, company_name: e.target.value })}
-                        placeholder="اسم الشركة التي تعاملت معها"
-                        className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 transition-all"
-                        style={{ fontFamily: 'Tajawal, sans-serif' }}
-                      />
-                  </div>
-
+                {/* First Name & Last Name */}
+                <div className="grid sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-1.5" style={{ fontFamily: 'Cairo, sans-serif' }}>
-                      قيمة المبلغ المُودَع / المفقود
+                      الاسم الأول <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        name="First Name"
+                        required
+                        value={form.firstName}
+                        onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+                        placeholder="أدخل اسمك الأول"
+                        className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 transition-all"
+                        style={{ fontFamily: 'Tajawal, sans-serif' }}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5" style={{ fontFamily: 'Cairo, sans-serif' }}>
+                      اسم العائلة <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
-                      value={form.amount}
-                      onChange={(e) => setForm({ ...form, amount: e.target.value })}
-                      placeholder="مثال: 5,000 دولار"
+                      name="Last Name"
+                      required
+                      value={form.lastName}
+                      onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+                      placeholder="أدخل اسم العائلة"
                       className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 transition-all"
                       style={{ fontFamily: 'Tajawal, sans-serif' }}
                     />
                   </div>
+                </div>
 
+                {/* Email & Phone */}
+                <div className="grid sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-1.5" style={{ fontFamily: 'Cairo, sans-serif' }}>
-                      وصف المشكلة <span className="text-red-500">*</span>
+                      البريد الإلكتروني <span className="text-red-500">*</span>
                     </label>
-                    <textarea
+                    <input
+                      type="email"
+                      name="Email"
                       required
-                      value={form.problem_description}
-                      onChange={(e) => setForm({ ...form, problem_description: e.target.value })}
-                      placeholder="اشرح تفاصيل ما حدث معك بقدر الإمكان..."
-                      rows={5}
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 transition-all resize-none"
+                      value={form.email}
+                      onChange={(e) => setForm({ ...form, email: e.target.value })}
+                      placeholder="example@email.com"
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 transition-all"
+                      style={{ fontFamily: 'Tajawal, sans-serif' }}
+                      dir="ltr"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5" style={{ fontFamily: 'Cairo, sans-serif' }}>
+                      رقم الهاتف
+                    </label>
+                    <input
+                      type="tel"
+                      name="Phone"
+                      value={form.phone}
+                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                      placeholder="+966 5X XXX XXXX"
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 transition-all"
+                      style={{ fontFamily: 'Tajawal, sans-serif' }}
+                      dir="ltr"
+                    />
+                  </div>
+                </div>
+
+                {/* Country & Company */}
+                <div className="grid sm:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5" style={{ fontFamily: 'Cairo, sans-serif' }}>
+                      الدولة
+                    </label>
+                    <input
+                      type="text"
+                      name="Country"
+                      value={form.country}
+                      onChange={(e) => setForm({ ...form, country: e.target.value })}
+                      placeholder="مثال: السعودية"
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 transition-all"
                       style={{ fontFamily: 'Tajawal, sans-serif' }}
                     />
                   </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5" style={{ fontFamily: 'Cairo, sans-serif' }}>
+                      اسم شركة التداول
+                    </label>
+                    <input
+                      type="text"
+                      name="Company"
+                      value={form.company}
+                      onChange={(e) => setForm({ ...form, company: e.target.value })}
+                      placeholder="اسم الشركة التي تعاملت معها"
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 transition-all"
+                      style={{ fontFamily: 'Tajawal, sans-serif' }}
+                    />
+                  </div>
+                </div>
 
-                  {status === 'error' && (
-                    <div className="flex items-center gap-2 text-red-600 text-sm bg-red-50 border border-red-100 rounded-lg px-4 py-3">
-                      <AlertTriangle size={15} />
-                      <span style={{ fontFamily: 'Tajawal, sans-serif' }}>{error}</span>
-                    </div>
-                  )}
+                {/* Amount */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5" style={{ fontFamily: 'Cairo, sans-serif' }}>
+                    قيمة المبلغ المُودَع / المفقود
+                  </label>
+                  <input
+                    type="text"
+                    name="Amount"
+                    value={form.amount}
+                    onChange={(e) => setForm({ ...form, amount: e.target.value })}
+                    placeholder="مثال: 5,000 دولار"
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 transition-all"
+                    style={{ fontFamily: 'Tajawal, sans-serif' }}
+                  />
+                </div>
 
-                  <button
-                    type="submit"
-                    disabled={status === 'loading'}
-                    className="w-full py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-60"
-                    style={{ background: '#1B2A4A', color: 'white', fontFamily: 'Cairo, sans-serif' }}
-                  >
-                    {status === 'loading' ? (
-                      <>
-                        <Loader2 size={16} className="animate-spin" />
-                        جارٍ الإرسال...
-                      </>
-                    ) : (
-                      <>
-                        <Shield size={16} />
-                        أرسل الطلب مجاناً
-                      </>
-                    )}
-                  </button>
+                {/* Description */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5" style={{ fontFamily: 'Cairo, sans-serif' }}>
+                    وصف المشكلة <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    name="Description"
+                    required
+                    value={form.description}
+                    onChange={(e) => setForm({ ...form, description: e.target.value })}
+                    placeholder="اشرح تفاصيل ما حدث معك بقدر الإمكان..."
+                    rows={5}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 transition-all resize-none"
+                    style={{ fontFamily: 'Tajawal, sans-serif' }}
+                  />
+                </div>
 
-                  <p className="text-xs text-gray-400 text-center" style={{ fontFamily: 'Tajawal, sans-serif' }}>
-                    معلوماتك سرية ومحمية. لن يتم مشاركتها مع أي طرف ثالث بدون إذنك.
-                  </p>
-                </form>
-              )}
+                <button
+                  type="submit"
+                  className="w-full py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+                  style={{ background: '#1B2A4A', color: 'white', fontFamily: 'Cairo, sans-serif' }}
+                >
+                  <Shield size={16} />
+                  أرسل الطلب مجاناً
+                </button>
+
+                <p className="text-xs text-gray-400 text-center" style={{ fontFamily: 'Tajawal, sans-serif' }}>
+                  معلوماتك سرية ومحمية. لن يتم مشاركتها مع أي طرف ثالث بدون إذنك.
+                </p>
+              </form>
             </div>
           </div>
 
@@ -183,13 +222,13 @@ export default function ContactPage() {
                 معلومات التواصل
               </h3>
               <div className="space-y-4">
-                <a href="mailto:info@almorshid-almali.com" className="flex items-center gap-3 text-gray-600 hover:text-primary-800 transition-colors">
+                <a href="mailto:info@almorshidalmali.com" className="flex items-center gap-3 text-gray-600 hover:text-primary-800 transition-colors">
                   <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: '#eef1f8' }}>
                     <Mail size={16} style={{ color: '#1B2A4A' }} />
                   </div>
                   <div>
                     <div className="text-xs text-gray-400" style={{ fontFamily: 'Cairo, sans-serif' }}>البريد الإلكتروني</div>
-                    <div className="text-sm font-medium" style={{ fontFamily: 'Tajawal, sans-serif' }}>info@almorshid-almali.com</div>
+                    <div className="text-sm font-medium" style={{ fontFamily: 'Tajawal, sans-serif' }}>info@almorshidalmali.com</div>
                   </div>
                 </a>
               </div>

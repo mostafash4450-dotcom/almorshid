@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { Calendar, User, Eye } from 'lucide-react';
 import type { Article } from '@/lib/supabase';
 
@@ -26,12 +25,7 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
       <Link href={href} className="article-card flex gap-4 p-4 group">
         {article.featured_image && (
           <div className="relative w-28 h-20 flex-shrink-0 rounded overflow-hidden bg-gray-100">
-            <Image
-              src={article.featured_image}
-              alt={article.title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
-            />
+            <img src={article.featured_image} alt={article.title} className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" />
           </div>
         )}
         <div className="flex-1 min-w-0">
@@ -62,7 +56,7 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
         </div>
         {article.featured_image && (
           <div className="relative w-16 h-12 flex-shrink-0 rounded overflow-hidden bg-gray-100">
-            <Image src={article.featured_image} alt={article.title} fill className="object-cover" />
+            <img src={article.featured_image} alt={article.title} className="absolute inset-0 h-full w-full object-cover" />
           </div>
         )}
       </Link>
@@ -74,12 +68,7 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
       <Link href={href} className="article-card group block overflow-hidden">
         <div className="relative h-64 bg-gray-200 overflow-hidden">
           {article.featured_image ? (
-            <Image
-              src={article.featured_image}
-              alt={article.title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-500"
-            />
+            <img src={article.featured_image} alt={article.title} className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-primary-800 to-primary-900 flex items-center justify-center">
               <span className="text-white/20 text-6xl font-bold" style={{ fontFamily: 'Cairo, sans-serif' }}>
@@ -117,12 +106,7 @@ export default function ArticleCard({ article, variant = 'default' }: Props) {
     <Link href={href} className="article-card group block overflow-hidden">
       <div className="relative h-44 bg-gray-100 overflow-hidden">
         {article.featured_image ? (
-          <Image
-            src={article.featured_image}
-            alt={article.title}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-          />
+          <img src={article.featured_image} alt={article.title} className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-primary-700 to-primary-900 flex items-center justify-center">
             <span className="text-white/20 text-5xl font-bold" style={{ fontFamily: 'Cairo, sans-serif' }}>

@@ -4,6 +4,11 @@ import { supabase } from '@/lib/supabase';
 import ArticleCard from '@/components/articles/ArticleCard';
 import type { Article, Category } from '@/lib/supabase';
 
+export async function generateStaticParams() {
+  const { data } = await supabase.from('categories').select('slug');
+  return (data || []).map((cat) => ({ slug: cat.slug }));
+}
+
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const { data } = await supabase.from('categories').select('*').eq('slug', params.slug).single();
   if (!data) return {};

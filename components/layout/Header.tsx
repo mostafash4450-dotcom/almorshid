@@ -80,9 +80,9 @@ export default function Header() {
       <div className="bg-primary-900 text-white text-xs py-2">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <a href="mailto:info@almorshid-almali.com" className="flex items-center gap-1.5 hover:text-gold-300 transition-colors hidden sm:flex">
+            <a href="mailto:info@almorshidalmali.com" className="flex items-center gap-1.5 hover:text-gold-300 transition-colors hidden sm:flex">
               <Mail size={12} />
-              <span>info@almorshid-almali.com</span>
+              <span>info@almorshidalmali.com</span>
             </a>
           </div>
           <div className="flex items-center gap-4 text-gold-300 font-medium">

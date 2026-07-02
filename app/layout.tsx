@@ -55,6 +55,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700&display=swap"
           rel="stylesheet"
         />
+        {/* Zoho SalesIQ */}
+        <script dangerouslySetInnerHTML={{ __html: `window.$zoho=window.$zoho || {};$zoho.salesiq=$zoho.salesiq||{ready:function(){}};` }} />
+        <script id="zsiqscript" src="https://salesiq.zohopublic.com/widget?wc=siq6b2a8b3cf84aa8c2565596a55879b68a" defer />
       </head>
       <body>
         <Header />

@@ -5,6 +5,11 @@ import { Star, CheckCircle, ExternalLink, ChevronDown, ArrowLeft, Shield } from 
 import { supabase } from '@/lib/supabase';
 import type { LawOffice } from '@/lib/supabase';
 
+export async function generateStaticParams() {
+  const { data } = await supabase.from('law_offices').select('slug');
+  return (data || []).map((office) => ({ slug: office.slug }));
+}
+
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const { data } = await supabase.from('law_offices').select('*').eq('slug', params.slug).single();
   if (!data) return {};

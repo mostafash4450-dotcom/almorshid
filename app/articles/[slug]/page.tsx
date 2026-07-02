@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Calendar, User, Eye, Tag, ArrowLeft, Share2, MessageSquare } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { getSupabaseAdmin, hasSupabaseServiceRoleKey } from '@/lib/supabase-admin';
@@ -9,8 +8,10 @@ import ArticleCard from '@/components/articles/ArticleCard';
 import CommentForm from '@/components/articles/CommentForm';
 import type { Article, PublicArticleComment } from '@/lib/supabase';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export async function generateStaticParams() {
+  const { data } = await supabase.from('articles').select('slug').eq('status', 'published');
+  return (data || []).map((article) => ({ slug: article.slug }));
+}
 
 function normalizeSlug(slug: string) {
   try {
@@ -174,12 +175,10 @@ export default async function ArticlePage({ params }: { params: { slug: string }
             {/* Featured image */}
             {article.featured_image && (
               <div className="relative w-full h-64 md:h-80 rounded-xl overflow-hidden mb-8 bg-gray-100">
-                <Image
+                <img
                   src={article.featured_image}
                   alt={article.title}
-                  fill
-                  className="object-cover"
-                  priority
+                  className="absolute inset-0 h-full w-full object-cover"
                 />
               </div>
             )}
